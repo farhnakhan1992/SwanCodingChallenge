@@ -1,9 +1,8 @@
 //
-//  NetworkService.swift
-//  NetworkLayer
+//  Router.swift
+//  SwanOpenWeather
 //
-//  Created by Malcolm Kumwenda on 2018/03/07.
-//  Copyright © 2018 Malcolm Kumwenda. All rights reserved.
+//  Created by Farhan Khan on 25/05/2021.
 //
 
 import Foundation

@@ -1,9 +1,8 @@
 //
 //  LocationManager.swift
-//  LocationManager
+//  SwanOpenWeather
 //
-//  Created by Rajan Maheshwari on 22/10/16.
-//  Copyright © 2016 Rajan Maheshwari. All rights reserved.
+//  Created by Farhan Khan on 24/05/2021.
 //
 
 import UIKit
@@ -162,6 +161,7 @@ final class LocationManager: NSObject {
         
         if !reverseGeocoding {
             
+            setupLocationManager()
             reverseGeocoding = true
             
             //Resetting last location
@@ -169,7 +169,7 @@ final class LocationManager: NSObject {
             
             self.geoLocationCompletionHandler = completionHandler
             
-            setupLocationManager()
+            
         }
     }
 
@@ -248,15 +248,15 @@ final class LocationManager: NSObject {
     private func didComplete(location: CLLocation?,error: NSError?) {
         locationManager?.stopUpdatingLocation()
         locationCompletionHandler?(location,error)
-        locationManager?.delegate = nil
-        locationManager = nil
+//        locationManager?.delegate = nil
+//        locationManager = nil
     }
     
     private func didCompleteGeocoding(location:CLLocation?,placemark: CLPlacemark?,error: NSError?) {
         locationManager?.stopUpdatingLocation()
         geoLocationCompletionHandler?(location,placemark,error)
-        locationManager?.delegate = nil
-        locationManager = nil
+//        locationManager?.delegate = nil
+//        locationManager = nil
         reverseGeocoding = false
     }
 }

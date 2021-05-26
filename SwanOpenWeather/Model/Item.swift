@@ -1,10 +1,8 @@
 //
 //  Item.swift
-//  MVP-Realm
+//  SwanOpenWeather
 //
-//  Created by Zafar on 1/28/20.
-//  Copyright © 2020 Zafar. All rights reserved.
-//
+//  Created by Farhan Khan on 25/05/2021.
 
 import RealmSwift
 

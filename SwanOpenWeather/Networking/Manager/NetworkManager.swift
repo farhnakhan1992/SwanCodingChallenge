@@ -1,9 +1,8 @@
 //
 //  NetworkManager.swift
-//  NetworkLayer
+//  SwanOpenWeather
 //
-//  Created by Malcolm Kumwenda on 2018/03/11.
-//  Copyright © 2018 Malcolm Kumwenda. All rights reserved.
+//  Created by Farhan Khan on 25/05/2021.
 //
 
 import Foundation
@@ -24,12 +23,12 @@ enum Result<String>{
 }
 
 struct NetworkManager {
-    static let environment : NetworkEnvironment = .production
-    static let MovieAPIKey = ""
-    let router = Router<MovieApi>()
+    static let environment : NetworkEnvironment = .staging
+    static let OpenForcastKey = "9a318b1c855ccd128e7366931478466a"
+    let router = Router<ForcastApi>()
     
-    func getNewMovies(page: Int, completion: @escaping (_ movie: [Movie]?,_ error: String?)->()){
-        router.request(.newMovies(page: page)) { data, response, error in
+    func getFiveDaysForcastViaLatLng(lat: Double, lng:Double, completion: @escaping (_ weaterList: [List]?,_ error: String?)->()){
+        router.request(.fiveDaysForcast(lat: lat, lng: lng)) { data, response, error in
             
             if error != nil {
                 completion(nil, "Please check your network connection.")
@@ -47,8 +46,40 @@ struct NetworkManager {
                         print(responseData)
                         let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
                         print(jsonData)
-                        let apiResponse = try JSONDecoder().decode(MovieApiResponse.self, from: responseData)
-                        completion(apiResponse.movies,nil)
+                        let apiResponse = try JSONDecoder().decode(WeatherBaseClass.self, from: responseData)
+                        completion(apiResponse.list,nil)
+                    }catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    func getCurrentWeather(lat: Double, lng:Double, completion: @escaping (_ weaterList: CurrentWeatherClass?,_ error: String?)->()){
+        router.request(.currentLocationForcast(lat: lat, lng: lng)) { data, response, error in
+            
+            if error != nil {
+                completion(nil, "Please check your network connection.")
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = self.handleNetworkResponse(response)
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        print(responseData)
+                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(CurrentWeatherClass.self, from: responseData)
+                        completion(apiResponse,nil)
                     }catch {
                         print(error)
                         completion(nil, NetworkResponse.unableToDecode.rawValue)
